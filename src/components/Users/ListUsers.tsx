@@ -5,7 +5,6 @@ import { getUsers, deleteUser } from "../../services/userService";
 import Swal from "sweetalert2";
 import { User } from "../../models/user";
 
-
 const ListUsers = () => {
 
 

@@ -21,8 +21,45 @@ const Photo = lazy(() => import('../pages/Photo'));
 const Restaurants = lazy(() => import('../pages/Restaurant'));
 const Products = lazy(() => import('../pages/Product'));
 const Shifts = lazy(() => import('../pages/Shift'));
+const ListUsers = lazy(() => import('../pages/Users/page')); 
+const ListDrivers = lazy(() => import('../pages/Drivers/page'));
+const ListMotorcycles = lazy(() => import('../pages/Motorcycles/page'));
+const ListShifts = lazy(() => import('../pages/Shifts/page'));
+const ListIssues = lazy(() => import('../pages/Issues/page'));
+const ListCustomers = lazy(() => import('../pages/Customers/page'));
+
 
 const coreRoutes = [
+  {
+    path: '/ListMotorcycles',
+    title: 'Motorcycles',
+    component: ListMotorcycles,
+  },
+  {
+    path: '/ListShifts',
+    title: 'Shifts', 
+    component: ListShifts,
+  },
+  {
+    path: '/ListIssues',
+    title: 'Issues',
+    component: ListIssues,
+  },
+  {
+    path: '/ListCustomers',
+    title: 'Customers',
+    component: ListCustomers,
+  },
+  {
+    path: '/ListDrivers',
+    title: 'Drivers',
+    component: ListDrivers,
+  },
+   {
+    path: '/ListUsers',
+    title: 'ListUsers',
+    component: ListUsers,
+  },
   {
     path: '/shift',
     title: 'Shift',

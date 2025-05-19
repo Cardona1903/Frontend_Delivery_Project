@@ -1,10 +1,10 @@
-import ListUsers from "../../components/Users/ListUsers";
+import ListIssues from "../../components/Issues/ListIssues";
 import Breadcrumb from "../../components/Breadcrumb";
 const List = () => {
     return (
         <>
-            <Breadcrumb pageName="Usuarios" />
-            <ListUsers />
+            <Breadcrumb pageName="Issues" />
+            <ListIssues />
         </>
     );
 };

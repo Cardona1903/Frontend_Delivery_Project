@@ -6,6 +6,5 @@ export interface Customer {
     email: string;
     phone: string;
     motorcycle_id?: number;
-    orders?: Order[];      
-    is_active?: boolean;    // Relación inversa (opcional)
+    orders?: Order[];        // Relación inversa (opcional)
 }

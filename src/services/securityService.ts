@@ -1,4 +1,4 @@
-import { User } from "../models/User";
+import { User } from "../models/user";
 import { store } from "../store/store";
 import { setUser } from "../store/userSlice";
 

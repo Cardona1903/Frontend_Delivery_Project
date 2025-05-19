@@ -27,9 +27,46 @@ const ListMotorcycles = lazy(() => import('../pages/Motorcycles/page'));
 const ListShifts = lazy(() => import('../pages/Shifts/page'));
 const ListIssues = lazy(() => import('../pages/Issues/page'));
 const ListCustomers = lazy(() => import('../pages/Customers/page'));
+const ListRestaurants = lazy(() => import('../pages/Restaurants/page'));
+const ListOrders = lazy(() => import('../pages/Orders/page'));
+const ListMenus = lazy(() => import('../pages/Menus/page'));
+const ListPhotos = lazy(() => import('../pages/Photos/page'));
+const ListProducts = lazy(() => import('../pages/Products/page'));
+const ListAddresses = lazy(() => import('../pages/Addresses/page'));
+
 
 
 const coreRoutes = [
+  {
+    path: '/ListAddresses',
+    title: 'Addresses',
+    component: ListAddresses,
+  },
+  {
+    path: '/ListPhotos',
+    title: 'Photos',  
+    component: ListPhotos,
+  },
+  {
+    path: '/ListMenus',
+    title: 'Menus',
+    component: ListMenus,
+  },
+  {
+    path: '/ListProducts',
+    title: 'Products',
+    component: ListProducts,
+  },
+  {
+    path: '/ListOrders',
+    title: 'Orders',
+    component: ListOrders,
+  },
+  {
+    path: '/ListRestaurants',
+    title: 'Restaurants',
+    component: ListRestaurants,
+  },
   {
     path: '/ListMotorcycles',
     title: 'Motorcycles',

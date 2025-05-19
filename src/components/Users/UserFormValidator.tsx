@@ -12,7 +12,6 @@ interface MyFormProps {
 }
 
 
-
 const UserFormValidator: React.FC<MyFormProps> = ({ mode, handleCreate, handleUpdate,user }) => {
 
     const handleSubmit = (formattedValues: User) => {

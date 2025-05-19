@@ -1,16 +1,16 @@
-import { Driver } from "../../models/Driver";
+import { Customer } from "../../models/Customer";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
-interface DriverFormProps {
+interface CustomerFormProps {
   mode: number;
-  handleCreate?: (values: Driver) => void;
-  handleUpdate?: (values: Driver) => void;
-  driver?: Driver | null;
+  handleCreate?: (values: Customer) => void;
+  handleUpdate?: (values: Customer) => void;
+  customer?: Customer | null;
 }
 
-const DriverFormValidator: React.FC<DriverFormProps> = ({ mode, handleCreate, handleUpdate, driver }) => {
-  const handleSubmit = (formattedValues: Driver) => {
+const CustomerFormValidator: React.FC<CustomerFormProps> = ({ mode, handleCreate, handleUpdate, customer }) => {
+  const handleSubmit = (formattedValues: Customer) => {
     if (mode === 1 && handleCreate) {
       handleCreate(formattedValues);
     } else if (mode === 2 && handleUpdate) {
@@ -22,21 +22,19 @@ const DriverFormValidator: React.FC<DriverFormProps> = ({ mode, handleCreate, ha
 
   return (
     <Formik
-      initialValues={driver ? driver : {
+      initialValues={customer ? customer : {
         name: "",
         email: "",
         phone: "",
+        motorcycle_id: undefined,
         is_active: false,
-        license_number: "",
-        status: "",
       }}
       validationSchema={Yup.object({
         name: Yup.string().required("El nombre es obligatorio"),
         email: Yup.string().email("Email inválido").required("El email es obligatorio"),
         phone: Yup.string().matches(/^\d{10}$/, "El teléfono debe tener 10 dígitos").required("El teléfono es obligatorio"),
+        motorcycle_id: Yup.number().typeError("Debe ser un número").integer("Debe ser un número entero").positive("Debe ser positivo").notRequired(),
         is_active: Yup.boolean(),
-        license_number: Yup.string(),
-        status: Yup.string(),
       })}
       onSubmit={handleSubmit}
     >
@@ -57,19 +55,14 @@ const DriverFormValidator: React.FC<DriverFormProps> = ({ mode, handleCreate, ha
             <Field type="text" name="phone" className="w-full border rounded-md p-2" />
             <ErrorMessage name="phone" component="p" className="text-red-500 text-sm" />
           </div>
+          <div>
+            <label htmlFor="motorcycle_id" className="block text-lg font-medium text-gray-700">ID de Motocicleta</label>
+            <Field type="number" name="motorcycle_id" className="w-full border rounded-md p-2" />
+            <ErrorMessage name="motorcycle_id" component="p" className="text-red-500 text-sm" />
+          </div>
           <div className="flex items-center">
             <Field type="checkbox" name="is_active" className="mr-2" />
             <label htmlFor="is_active" className="text-lg font-medium text-gray-700">Activo</label>
-          </div>
-          <div>
-            <label htmlFor="license_number" className="block text-lg font-medium text-gray-700">Número de Licencia</label>
-            <Field type="text" name="license_number" className="w-full border rounded-md p-2" />
-            <ErrorMessage name="license_number" component="p" className="text-red-500 text-sm" />
-          </div>
-          <div>
-            <label htmlFor="status" className="block text-lg font-medium text-gray-700">Estado</label>
-            <Field type="text" name="status" className="w-full border rounded-md p-2" />
-            <ErrorMessage name="status" component="p" className="text-red-500 text-sm" />
           </div>
           <button
             type="submit"
@@ -83,4 +76,4 @@ const DriverFormValidator: React.FC<DriverFormProps> = ({ mode, handleCreate, ha
   );
 };
 
-export default DriverFormValidator;
+export default CustomerFormValidator;

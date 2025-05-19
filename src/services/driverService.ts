@@ -70,3 +70,5 @@ export const deleteDriver = async (id: number): Promise<boolean> => {
         return false;
     }
 };
+
+export default driverService;

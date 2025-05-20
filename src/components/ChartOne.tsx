@@ -1,189 +1,148 @@
 import { ApexOptions } from 'apexcharts';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import { Order } from '../models/Order';
 
-const options: ApexOptions = {
-  legend: {
-    show: false,
-    position: 'top',
-    horizontalAlign: 'left',
-  },
-  colors: ['#3C50E0', '#80CAEE'],
-  chart: {
-    fontFamily: 'Satoshi, sans-serif',
-    height: 335,
-    type: 'area',
-    dropShadow: {
-      enabled: true,
-      color: '#623CEA14',
-      top: 10,
-      blur: 4,
-      left: 0,
-      opacity: 0.1,
-    },
-
-    toolbar: {
-      show: false,
-    },
-  },
-  responsive: [
-    {
-      breakpoint: 1024,
-      options: {
-        chart: {
-          height: 300,
-        },
-      },
-    },
-    {
-      breakpoint: 1366,
-      options: {
-        chart: {
-          height: 350,
-        },
-      },
-    },
-  ],
-  stroke: {
-    width: [2, 2],
-    curve: 'straight',
-  },
-  // labels: {
-  //   show: false,
-  //   position: "top",
-  // },
-  grid: {
-    xaxis: {
-      lines: {
-        show: true,
-      },
-    },
-    yaxis: {
-      lines: {
-        show: true,
-      },
-    },
-  },
-  dataLabels: {
-    enabled: false,
-  },
-  markers: {
-    size: 4,
-    colors: '#fff',
-    strokeColors: ['#3056D3', '#80CAEE'],
-    strokeWidth: 3,
-    strokeOpacity: 0.9,
-    strokeDashArray: 0,
-    fillOpacity: 1,
-    discrete: [],
-    hover: {
-      size: undefined,
-      sizeOffset: 5,
-    },
-  },
-  xaxis: {
-    type: 'category',
-    categories: [
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-    ],
-    axisBorder: {
-      show: false,
-    },
-    axisTicks: {
-      show: false,
-    },
-  },
-  yaxis: {
-    title: {
-      style: {
-        fontSize: '0px',
-      },
-    },
-    min: 0,
-    max: 100,
-  },
-};
-
-interface ChartOneState {
-  series: {
-    name: string;
-    data: number[];
-  }[];
+interface ChartOneProps {
+  data: Order[];
 }
 
-const ChartOne: React.FC = () => {
-  const [state, setState] = useState<ChartOneState>({
-    series: [
-      {
-        name: 'Product One',
-        data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
+const ChartOne: React.FC<ChartOneProps> = ({ data }) => {
+  const [chartData, setChartData] = useState<{
+    series: { name: string; data: number[] }[];
+    options: ApexOptions;
+  }>({
+    series: [],
+    options: {
+      colors: ['#3C50E0', '#80CAEE'],
+      chart: {
+        fontFamily: 'Satoshi, sans-serif',
+        type: 'bar',
+        height: 335,
+        stacked: false,
+        toolbar: {
+          show: false,
+        },
+        zoom: {
+          enabled: false,
+        },
       },
-
-      {
-        name: 'Product Two',
-        data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51],
+      responsive: [
+        {
+          breakpoint: 1536,
+          options: {
+            plotOptions: {
+              bar: {
+                borderRadius: 0,
+                columnWidth: '25%',
+              },
+            },
+          },
+        },
+      ],
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          borderRadius: 0,
+          columnWidth: '25%',
+          borderRadiusApplication: 'end',
+          borderRadiusWhenStacked: 'last',
+        },
       },
-    ],
+      dataLabels: {
+        enabled: false,
+      },
+      xaxis: {
+        categories: [],
+      },
+      legend: {
+        position: 'top',
+        horizontalAlign: 'left',
+        fontFamily: 'Satoshi',
+        fontWeight: 500,
+        fontSize: '14px',
+        markers: {
+          radius: 99,
+        },
+      },
+      fill: {
+        opacity: 1,
+      },
+    },
   });
+
+  useEffect(() => {
+    if (!data || data.length === 0) return;
+
+    // Procesar datos para el gráfico
+    const processData = () => {
+      // Agrupar ventas por mes
+      const salesByMonth: { [key: string]: { current: number; previous: number } } = {};
+      
+      // Obtener el año actual
+      const currentYear = new Date().getFullYear();
+      
+      // Inicializar los meses
+      const months = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      ];
+      
+      months.forEach(month => {
+        salesByMonth[month] = { current: 0, previous: 0 };
+      });
+      
+      // Procesar datos de ventas
+      data.forEach(order => {
+        if (order.created_at) {
+          const date = new Date(order.created_at);
+          const month = date.toLocaleString('default', { month: 'short' });
+          const year = date.getFullYear();
+          
+          if (year === currentYear) {
+            salesByMonth[month].current += order.total_price;
+          } else if (year === currentYear - 1) {
+            salesByMonth[month].previous += order.total_price;
+          }
+        }
+      });
+      
+      // Preparar series para el gráfico
+      const currentYearData = months.map(month => salesByMonth[month].current);
+      const previousYearData = months.map(month => salesByMonth[month].previous);
+      
+      setChartData({
+        series: [
+          {
+            name: `${currentYear}`,
+            data: currentYearData,
+          },
+          {
+            name: `${currentYear - 1}`,
+            data: previousYearData,
+          },
+        ],
+        options: {
+          ...chartData.options,
+          xaxis: {
+            categories: months,
+          },
+        },
+      });
+    };
+    
+    processData();
+  }, [data]);
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
-      <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
-        <div className="flex w-full flex-wrap gap-3 sm:gap-5">
-          <div className="flex min-w-47.5">
-            <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-primary">
-              <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
-            </span>
-            <div className="w-full">
-              <p className="font-semibold text-primary">Total Revenue</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
-            </div>
-          </div>
-          <div className="flex min-w-47.5">
-            <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-secondary">
-              <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-secondary"></span>
-            </span>
-            <div className="w-full">
-              <p className="font-semibold text-secondary">Total Sales</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
-            </div>
-          </div>
-        </div>
-        <div className="flex w-full max-w-45 justify-end">
-          <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
-            <button className="rounded bg-white py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark">
-              Day
-            </button>
-            <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
-              Week
-            </button>
-            <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
-              Month
-            </button>
-          </div>
-        </div>
-      </div>
-
       <div>
-        <div id="chartOne" className="-ml-5">
-          <ReactApexChart
-            options={options}
-            series={state.series}
-            type="area"
-            height={350}
-          />
-        </div>
+        <ReactApexChart
+          options={chartData.options}
+          series={chartData.series}
+          type="bar"
+          height={350}
+        />
       </div>
     </div>
   );

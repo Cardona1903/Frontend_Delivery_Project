@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext'; // Importa el hook useAuth
+import toast from 'react-hot-toast'; // Para mostrar notificaciones
 
 import UserOne from '../images/user/user-01.png';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { currentUser, signOut } = useAuth(); // Obtiene el usuario actual y la función de cierre de sesión
+  const navigate = useNavigate();
 
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
@@ -35,6 +39,18 @@ const DropdownUser = () => {
     return () => document.removeEventListener('keydown', keyHandler);
   });
 
+  // Función para manejar el cierre de sesión
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast.success('Sesión cerrada correctamente');
+      navigate('/auth/signin');
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      toast.error('Error al cerrar sesión');
+    }
+  };
+
   return (
     <div className="relative">
       <Link
@@ -45,13 +61,13 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+            {currentUser?.displayName || 'Usuario'}
           </span>
-          <span className="block text-xs">UX Designer</span>
+          <span className="block text-xs">{currentUser?.email || 'Correo no disponible'}</span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
+          <img src={currentUser?.photoURL || UserOne} alt="User" />
         </span>
 
         <svg
@@ -155,7 +171,10 @@ const DropdownUser = () => {
             </Link>
           </li>
         </ul>
-        <button className="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+        <button 
+          onClick={handleLogout}
+          className="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+        >
           <svg
             className="fill-current"
             width="22"

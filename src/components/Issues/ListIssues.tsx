@@ -1,11 +1,19 @@
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { getIssues, deleteIssue } from "../../services/IssueService";
+import { getIssues, deleteIssue, updateIssue } from "../../services/IssueService";
 import Swal from "sweetalert2";
 import { Issue } from "../../models/Issue";
 
 const ListIssues = () => {
     const [data, setData] = useState<Issue[]>([]);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [currentIssue, setCurrentIssue] = useState<Issue | null>(null);
+    const [formData, setFormData] = useState({
+        issue_type: "",
+        description: "",
+        status: "",
+        motorcycle_id: 0
+    });
 
     useEffect(() => {
         fetchData();
@@ -21,7 +29,62 @@ const ListIssues = () => {
     };
 
     const handleEdit = (id: number) => {
-        console.log(`Editar incidencia con ID: ${id}`);
+        const issueToEdit = data.find(issue => issue.id === id);
+        if (issueToEdit) {
+            setCurrentIssue(issueToEdit);
+            setFormData({
+                issue_type: issueToEdit.issue_type,
+                description: issueToEdit.description,
+                status: issueToEdit.status,
+                motorcycle_id: issueToEdit.motorcycle_id
+            });
+            setIsEditModalOpen(true);
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: name === "motorcycle_id" ? parseInt(value) : value
+        });
+    };
+
+    const handleSubmitEdit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!currentIssue) return;
+
+        try {
+            const updatedIssue = {
+                ...currentIssue,
+                ...formData
+            };
+            
+            const success = await updateIssue(currentIssue.id!, updatedIssue);
+            
+            if (success) {
+                Swal.fire({
+                    title: "Actualizada",
+                    text: "La incidencia ha sido actualizada correctamente",
+                    icon: "success"
+                });
+                setIsEditModalOpen(false);
+                fetchData();
+            } else {
+                Swal.fire({
+                    title: "Error",
+                    text: "No se pudo actualizar la incidencia",
+                    icon: "error"
+                });
+            }
+        } catch (error) {
+            console.error("Error al actualizar la incidencia:", error);
+            Swal.fire({
+                title: "Error",
+                text: "Ocurrió un error al actualizar la incidencia",
+                icon: "error"
+            });
+        }
     };
 
     const handleDelete = async (id: number) => {
@@ -106,6 +169,87 @@ const ListIssues = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modal de Edición */}
+            {isEditModalOpen && currentIssue && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white dark:bg-boxdark p-6 rounded-lg w-full max-w-md">
+                        <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">Editar Incidencia</h2>
+                        <form onSubmit={handleSubmitEdit}>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Tipo de Incidencia
+                                </label>
+                                <input
+                                    type="text"
+                                    name="issue_type"
+                                    value={formData.issue_type}
+                                    onChange={handleInputChange}
+                                    className="w-full rounded border border-stroke bg-transparent py-3 px-5 text-black dark:text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input"
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Descripción
+                                </label>
+                                <textarea
+                                    name="description"
+                                    value={formData.description}
+                                    onChange={handleInputChange}
+                                    className="w-full rounded border border-stroke bg-transparent py-3 px-5 text-black dark:text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input"
+                                    rows={4}
+                                    required
+                                ></textarea>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Estado
+                                </label>
+                                <select
+                                    name="status"
+                                    value={formData.status}
+                                    onChange={handleInputChange}
+                                    className="w-full rounded border border-stroke bg-transparent py-3 px-5 text-black dark:text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input"
+                                    required
+                                >
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="En revisión">En revisión</option>
+                                    <option value="Resuelta">Resuelta</option>
+                                </select>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    ID Motocicleta
+                                </label>
+                                <input
+                                    type="number"
+                                    name="motorcycle_id"
+                                    value={formData.motorcycle_id}
+                                    onChange={handleInputChange}
+                                    className="w-full rounded border border-stroke bg-transparent py-3 px-5 text-black dark:text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input"
+                                    required
+                                />
+                            </div>
+                            <div className="flex justify-end gap-4.5">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsEditModalOpen(false)}
+                                    className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray-100 hover:bg-opacity-90"
+                                >
+                                    Guardar Cambios
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -1,11 +1,19 @@
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { getProducts, deleteProduct } from "../../services/ProductService";
+import { getProducts, deleteProduct, updateProduct } from "../../services/ProductService";
 import Swal from "sweetalert2";
 import { Product } from "../../models/Product";
 
 const ListProducts = () => {
     const [data, setData] = useState<Product[]>([]);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
+    const [formData, setFormData] = useState({
+        name: "",
+        description: "",
+        price: "",
+        category: ""
+    });
 
     useEffect(() => {
         fetchData();
@@ -21,7 +29,65 @@ const ListProducts = () => {
     };
 
     const handleEdit = (id: number) => {
-        console.log(`Editar producto con ID: ${id}`);
+        const productToEdit = data.find(product => product.id === id);
+        if (productToEdit) {
+            setCurrentProduct(productToEdit);
+            setFormData({
+                name: productToEdit.name,
+                description: productToEdit.description,
+                price: productToEdit.price.toString(),
+                category: productToEdit.category
+            });
+            setIsEditModalOpen(true);
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
+
+    const handleSubmitEdit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!currentProduct) return;
+
+        try {
+            const updatedProduct = {
+                ...currentProduct,
+                name: formData.name,
+                description: formData.description,
+                price: parseFloat(formData.price),
+                category: formData.category
+            };
+            
+            const success = await updateProduct(currentProduct.id!, updatedProduct);
+            
+            if (success) {
+                Swal.fire({
+                    title: "Actualizado",
+                    text: "El producto ha sido actualizado correctamente",
+                    icon: "success"
+                });
+                setIsEditModalOpen(false);
+                fetchData();
+            } else {
+                Swal.fire({
+                    title: "Error",
+                    text: "No se pudo actualizar el producto",
+                    icon: "error"
+                });
+            }
+        } catch (error) {
+            console.error("Error al actualizar el producto:", error);
+            Swal.fire({
+                title: "Error",
+                text: "Ocurrió un error al actualizar el producto",
+                icon: "error"
+            });
+        }
     };
 
     const handleDelete = async (id: number) => {
@@ -44,6 +110,17 @@ const ListProducts = () => {
             }
         });
     };
+
+    // Lista de categorías comunes (puedes ajustar según tus necesidades)
+    const categories = [
+        "Comida",
+        "Bebida",
+        "Postre",
+        "Entrada",
+        "Plato principal",
+        "Acompañamiento",
+        "Especial"
+    ];
 
     return (
         <div className="grid grid-cols-1 gap-9">
@@ -92,6 +169,96 @@ const ListProducts = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modal de Edición */}
+            {isEditModalOpen && currentProduct && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white dark:bg-boxdark p-6 rounded-lg w-full max-w-md">
+                        <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">Editar Producto</h2>
+                        <form onSubmit={handleSubmitEdit}>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Nombre
+                                </label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleInputChange}
+                                    className="w-full rounded border border-stroke bg-transparent py-3 px-5 text-black dark:text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input"
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Descripción
+                                </label>
+                                <textarea
+                                    name="description"
+                                    value={formData.description}
+                                    onChange={handleInputChange}
+                                    className="w-full rounded border border-stroke bg-transparent py-3 px-5 text-black dark:text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input"
+                                    rows={4}
+                                    required
+                                ></textarea>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Precio
+                                </label>
+                                <input
+                                    type="number"
+                                    name="price"
+                                    value={formData.price}
+                                    onChange={handleInputChange}
+                                    step="0.01"
+                                    min="0"
+                                    className="w-full rounded border border-stroke bg-transparent py-3 px-5 text-black dark:text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input"
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Categoría
+                                </label>
+                                <select
+                                    name="category"
+                                    value={formData.category}
+                                    onChange={handleInputChange}
+                                    className="w-full rounded border border-stroke bg-transparent py-3 px-5 text-black dark:text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input"
+                                    required
+                                >
+                                    <option value="">Seleccione una categoría</option>
+                                    {categories.map((category) => (
+                                        <option key={category} value={category}>
+                                            {category}
+                                        </option>
+                                    ))}
+                                    {/* Si la categoría actual no está en la lista, la añadimos */}
+                                    {formData.category && !categories.includes(formData.category) && (
+                                        <option value={formData.category}>{formData.category}</option>
+                                    )}
+                                </select>
+                            </div>
+                            <div className="flex justify-end gap-4.5">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsEditModalOpen(false)}
+                                    className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray-100 hover:bg-opacity-90"
+                                >
+                                    Guardar Cambios
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -5,7 +5,7 @@ import { Driver } from "../models/Driver";
 const DriverPage: React.FC = () => {
     const driver: Driver = {
         id: 1,
-        name: "Carlos López",
+        name: "Rambo López",
         email: "carlos.lopez@example.com",
         phone: "+1234567890",
         license_number: "DRV123456",

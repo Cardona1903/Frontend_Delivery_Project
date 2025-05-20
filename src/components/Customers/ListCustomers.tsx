@@ -1,11 +1,19 @@
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { getCustomers, deleteCustomer } from "../../services/CustomerService";
+import { getCustomers, deleteCustomer, updateCustomer } from "../../services/CustomerService";
 import Swal from "sweetalert2";
 import { Customer } from "../../models/Customer";
 
 const ListCustomers = () => {
     const [data, setData] = useState<Customer[]>([]);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [currentCustomer, setCurrentCustomer] = useState<Customer | null>(null);
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        motorcycle_id: ""
+    });
 
     useEffect(() => {
         fetchData();
@@ -21,8 +29,66 @@ const ListCustomers = () => {
     };
 
     const handleEdit = (id: number) => {
-        console.log(`Editar cliente con ID: ${id}`);
+        const customerToEdit = data.find(customer => customer.id === id);
+        if (customerToEdit) {
+            setCurrentCustomer(customerToEdit);
+            setFormData({
+                name: customerToEdit.name,
+                email: customerToEdit.email,
+                phone: customerToEdit.phone || "",
+                motorcycle_id: customerToEdit.motorcycle_id ? customerToEdit.motorcycle_id.toString() : ""
+            });
+            setIsEditModalOpen(true);
+        }
     };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
+
+    const handleSubmitEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentCustomer) return;
+
+    try {
+        const updatedCustomer = {
+            ...currentCustomer,
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            motorcycle_id: formData.motorcycle_id ? parseInt(formData.motorcycle_id) : null
+        };
+        
+        const success = await updateCustomer(currentCustomer.id!, updatedCustomer);
+        
+        if (success) {
+            Swal.fire({
+                title: "Actualizado",
+                text: "El cliente ha sido actualizado correctamente",
+                icon: "success"
+            });
+            setIsEditModalOpen(false);
+            fetchData();
+        } else {
+            Swal.fire({
+                title: "Error",
+                text: "No se pudo actualizar el cliente",
+                icon: "error"
+            });
+        }
+    } catch (error) {
+        console.error("Error al actualizar el cliente:", error);
+        Swal.fire({
+            title: "Error",
+            text: "Ocurrió un error al actualizar el cliente",
+            icon: "error"
+        });
+    }
+};
 
     const handleDelete = async (id: number) => {
         Swal.fire({
@@ -92,6 +158,83 @@ const ListCustomers = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modal de Edición */}
+            {isEditModalOpen && currentCustomer && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white dark:bg-boxdark p-6 rounded-lg w-full max-w-md">
+                        <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">Editar Cliente</h2>
+                        <form onSubmit={handleSubmitEdit}>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Nombre
+                                </label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleInputChange}
+                                    className="w-full rounded border border-stroke bg-transparent py-3 px-5 text-black dark:text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input"
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Correo Electrónico
+                                </label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleInputChange}
+                                    className="w-full rounded border border-stroke bg-transparent py-3 px-5 text-black dark:text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input"
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Teléfono
+                                </label>
+                                <input
+                                    type="tel"
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleInputChange}
+                                    className="w-full rounded border border-stroke bg-transparent py-3 px-5 text-black dark:text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    ID Motocicleta
+                                </label>
+                                <input
+                                    type="number"
+                                    name="motorcycle_id"
+                                    value={formData.motorcycle_id}
+                                    onChange={handleInputChange}
+                                    className="w-full rounded border border-stroke bg-transparent py-3 px-5 text-black dark:text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input"
+                                    placeholder="Dejar vacío si no tiene motocicleta asignada"
+                                />
+                            </div>
+                            <div className="flex justify-end gap-4.5">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsEditModalOpen(false)}
+                                    className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray-100 hover:bg-opacity-90"
+                                >
+                                    Guardar Cambios
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

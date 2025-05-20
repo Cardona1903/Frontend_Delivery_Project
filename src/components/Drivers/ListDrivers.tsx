@@ -1,11 +1,20 @@
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { deleteDriver, getDrivers } from "../../services/driverService"; // <-- Corregido
+import { deleteDriver, getDrivers, updateDriver } from "../../services/driverService";
 import Swal from "sweetalert2";
 import { Driver } from "../../models/Driver";
 
 const ListDrivers = () => {
     const [data, setData] = useState<Driver[]>([]);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [currentDriver, setCurrentDriver] = useState<Driver | null>(null);
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        license_number: "",
+        is_active: true
+    });
 
     useEffect(() => {
         fetchData();
@@ -21,7 +30,63 @@ const ListDrivers = () => {
     };
 
     const handleEdit = (id: number) => {
-        console.log(`Editar conductor con ID: ${id}`);
+        const driverToEdit = data.find(driver => driver.id === id);
+        if (driverToEdit) {
+            setCurrentDriver(driverToEdit);
+            setFormData({
+                name: driverToEdit.name,
+                email: driverToEdit.email,
+                phone: driverToEdit.phone || "",
+                license_number: driverToEdit.license_number || "",
+                is_active: driverToEdit.is_active
+            });
+            setIsEditModalOpen(true);
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value, type, checked } = e.target;
+        setFormData({
+            ...formData,
+            [name]: type === 'checkbox' ? checked : value
+        });
+    };
+
+    const handleSubmitEdit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!currentDriver) return;
+
+        try {
+            const updatedDriver = {
+                ...currentDriver,
+                ...formData
+            };
+            
+            const success = await updateDriver(currentDriver.id!, updatedDriver);
+            
+            if (success) {
+                Swal.fire({
+                    title: "Actualizado",
+                    text: "El conductor ha sido actualizado correctamente",
+                    icon: "success"
+                });
+                setIsEditModalOpen(false);
+                fetchData();
+            } else {
+                Swal.fire({
+                    title: "Error",
+                    text: "No se pudo actualizar el conductor",
+                    icon: "error"
+                });
+            }
+        } catch (error) {
+            console.error("Error al actualizar el conductor:", error);
+            Swal.fire({
+                title: "Error",
+                text: "Ocurrió un error al actualizar el conductor",
+                icon: "error"
+            });
+        }
     };
 
     const handleDelete = async (id: number) => {
@@ -98,6 +163,96 @@ const ListDrivers = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modal de Edición */}
+            {isEditModalOpen && currentDriver && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white dark:bg-boxdark p-6 rounded-lg w-full max-w-md">
+                        <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">Editar Conductor</h2>
+                        <form onSubmit={handleSubmitEdit}>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Nombre
+                                </label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleInputChange}
+                                    className="w-full rounded border border-stroke bg-transparent py-3 px-5 text-black dark:text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input"
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Correo Electrónico
+                                </label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleInputChange}
+                                    className="w-full rounded border border-stroke bg-transparent py-3 px-5 text-black dark:text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input"
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Teléfono
+                                </label>
+                                <input
+                                    type="tel"
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleInputChange}
+                                    className="w-full rounded border border-stroke bg-transparent py-3 px-5 text-black dark:text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Número de Licencia
+                                </label>
+                                <input
+                                    type="text"
+                                    name="license_number"
+                                    value={formData.license_number}
+                                    onChange={handleInputChange}
+                                    className="w-full rounded border border-stroke bg-transparent py-3 px-5 text-black dark:text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <div className="flex items-center">
+                                    <input
+                                        type="checkbox"
+                                        name="is_active"
+                                        checked={formData.is_active}
+                                        onChange={handleInputChange}
+                                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    />
+                                    <label className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Activo
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="flex justify-end gap-4.5">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsEditModalOpen(false)}
+                                    className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray-100 hover:bg-opacity-90"
+                                >
+                                    Guardar Cambios
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

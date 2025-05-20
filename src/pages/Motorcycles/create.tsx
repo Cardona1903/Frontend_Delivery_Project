@@ -20,7 +20,7 @@ const App = () => {
                     icon: "success",
                     timer: 3000
                 });
-                navigate("/motorcycles/list");
+                navigate("/ListMotorcycles");
             } else {
                 Swal.fire({
                     title: "Error",

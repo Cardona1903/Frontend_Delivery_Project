@@ -20,7 +20,7 @@ const App = () => {
                     icon: "success",
                     timer: 3000
                 });
-                navigate("/shifts/list");
+                navigate("/ListShifts");
             } else {
                 Swal.fire({
                     title: "Error",

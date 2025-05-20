@@ -33,10 +33,80 @@ const ListMenus = lazy(() => import('../pages/Menus/page'));
 const ListPhotos = lazy(() => import('../pages/Photos/page'));
 const ListProducts = lazy(() => import('../pages/Products/page'));
 const ListAddresses = lazy(() => import('../pages/Addresses/page'));
-
-
+const CreateAddresses = lazy(() => import('../pages/Addresses/create'));
+const CreateOrder = lazy(() => import('../pages/Orders/create'));
+const CreateCustomers = lazy(() => import('../pages/Customers/create'));
+const CreateDrivers = lazy(() => import('../pages/Drivers/create'));
+const CreateMotorcycles = lazy(() => import('../pages/Motorcycles/create'));
+const CreateRestaurants = lazy(() => import('../pages/Restaurants/create'));
+const CreateMenus = lazy(() => import('../pages/Menus/create'));
+const CreateProducts = lazy(() => import('../pages/Products/create'));
+const CreatePhotos = lazy(() => import('../pages/Photos/create'));
+const CreateIssues = lazy(() => import('../pages/Issues/create'));
+const CreateShifts = lazy(() => import('../pages/Shifts/create'));
+const CreateUsers = lazy(() => import('../pages/Users/create'));
 
 const coreRoutes = [
+  {
+    path: '/createShifts',
+    title: 'Create Shifts',
+    component: CreateShifts,
+  },
+  {
+    path: '/createIssues',
+    title: 'Create Issues',
+    component: CreateIssues,
+  },
+  {
+    path: '/createPhotos',
+    title: 'Create Photos',
+    component: CreatePhotos,
+  },
+  {
+    path: '/createProducts',
+    title: 'Create Products',
+    component: CreateProducts,
+  },
+  {
+    path: '/createMenus',
+    title: 'Create Menus',
+    component: CreateMenus,
+  },
+  {
+    path: '/createRestaurants',
+    title: 'Create Restaurants',
+    component: CreateRestaurants,
+  },
+  {
+    path: '/createMotorcycles',
+    title: 'Create Motorcycles',
+    component: CreateMotorcycles,
+  },
+  {
+    path: '/createDrivers',
+    title: 'Create Drivers',
+    component: CreateDrivers,
+  },
+  {
+    path: '/createCustomers',
+    title: 'Create Customers',
+    component: CreateCustomers,
+  },
+  {
+    path: '/createUsers',
+    title: 'Create Users',
+    component: CreateUsers,
+  },
+  {
+    path: '/createOrder',
+    title: 'Create Order',
+    component: CreateOrder,
+  },
+  {
+    path: '/createAddress',
+    title: 'Create Address',
+    component: CreateAddresses,
+  },
   {
     path: '/ListAddresses',
     title: 'Addresses',

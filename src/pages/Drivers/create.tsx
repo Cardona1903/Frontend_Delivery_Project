@@ -20,7 +20,7 @@ const App = () => {
                     icon: "success",
                     timer: 3000
                 });
-                navigate("/drivers/list");
+                navigate("/ListDrivers");
             } else {
                 Swal.fire({
                     title: "Error",

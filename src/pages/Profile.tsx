@@ -1,6 +1,6 @@
 import React from "react";
 import UserProfile from "../components/UserProfile";
-import { User } from "../models/User";
+import { User } from "../models/user";
 
 const Profile: React.FC = () => {
   const user: User = {

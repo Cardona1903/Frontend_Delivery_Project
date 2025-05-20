@@ -1,6 +1,5 @@
 import { lazy } from 'react';
 
-const Calendar = lazy(() => import('../pages/Calendar'));
 const Chart = lazy(() => import('../pages/Chart'));
 const FormElements = lazy(() => import('../pages/Form/FormElements'));
 const FormLayout = lazy(() => import('../pages/Form/FormLayout'));
@@ -33,8 +32,6 @@ const ListMenus = lazy(() => import('../pages/Menus/page'));
 const ListPhotos = lazy(() => import('../pages/Photos/page'));
 const ListProducts = lazy(() => import('../pages/Products/page'));
 const ListAddresses = lazy(() => import('../pages/Addresses/page'));
-
-
 
 const coreRoutes = [
   {
@@ -156,11 +153,6 @@ const coreRoutes = [
     path: '/demo',
     title: 'Demo',
     component: Demo,
-  },
-  {
-    path: '/calendar',
-    title: 'Calender',
-    component: Calendar,
   },
   {
     path: '/profile',

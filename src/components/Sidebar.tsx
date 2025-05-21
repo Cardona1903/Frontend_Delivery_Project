@@ -104,6 +104,92 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
             <ul className="mb-6 flex flex-col gap-1.5">
 
+              {/* <!-- Submenú de creación --> */}
+<SidebarLinkGroup activeCondition={pathname.includes('/create')}>
+  {(handleClick, open) => (
+    <>
+      <NavLink
+        to="#"
+        className={`group relative flex items-center justify-between gap-2.5 rounded-lg py-2 px-4 font-medium text-white hover:bg-indigo-800 ${
+          open && 'bg-indigo-800'
+        }`}
+        onClick={(e) => {
+          e.preventDefault();
+          handleClick();
+        }}
+      >
+        <div className="flex items-center gap-2.5">
+          <svg
+            className="fill-current"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 5V19M5 12H19"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          Crear
+        </div>
+        <svg
+          className={`fill-current ml-auto transition-transform duration-200 ${
+            open ? 'rotate-90' : ''
+          }`}
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+        >
+          <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" fill="none" />
+        </svg>
+      </NavLink>
+      <div className={`pl-10 mt-2 ${!open && 'hidden'}`}>
+        <ul className="flex flex-col gap-1 text-sm text-gray-300">
+          <li>
+            <NavLink to="/createAddress" className="hover:text-white">Address</NavLink>
+          </li>
+          <li>
+            <NavLink to="/createDrivers" className="hover:text-white">Drivers</NavLink>
+          </li>
+          <li>
+            <NavLink to="/createMotorcycles" className="hover:text-white">Motorcycles</NavLink>
+          </li>
+          <li>
+            <NavLink to="/createCustomers" className="hover:text-white">Customers</NavLink>
+          </li>
+          <li>
+            <NavLink to="/createIssues" className="hover:text-white">Issues</NavLink>
+          </li>
+          <li>
+            <NavLink to="/createMenus" className="hover:text-white">Menus</NavLink>
+          </li>
+          <li>
+            <NavLink to="/createOrder" className="hover:text-white">Orders</NavLink>
+          </li>
+          <li>
+            <NavLink to="/createProducts" className="hover:text-white">Products</NavLink>
+          </li>
+          <li>
+            <NavLink to="/createRestaurants" className="hover:text-white">Restaurants</NavLink>
+          </li>
+          <li>
+            <NavLink to="/createShifts" className="hover:text-white">Shifts</NavLink>
+          </li>
+          <li>
+            <NavLink to="/createPhotos" className="hover:text-white">Photos</NavLink>
+          </li>
+        </ul>
+      </div>
+    </>
+  )}
+</SidebarLinkGroup>
+
+
                  {/* <!-- Menu Item Addresses --> */}
               <li>
                 <NavLink

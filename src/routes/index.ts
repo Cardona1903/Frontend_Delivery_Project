@@ -45,8 +45,34 @@ const CreateIssues = lazy(() => import('../pages/Issues/create'));
 const CreateShifts = lazy(() => import('../pages/Shifts/create'));
 const CreateUsers = lazy(() => import('../pages/Users/create'));
 const TrackOrder = lazy(() => import('../pages/TrackOrder'));
+const ListInfringements = lazy(() => import('../pages/Infringement/page'));
+const ListMotorcycleInfringements = lazy(() => import('../pages/MotorcycleInfringement/page'));
+const createInfringement = lazy(() => import('../pages/Infringement/create'));
+const createMotorcycleInfringements = lazy(() => import('../pages/MotorcycleInfringement/create'));
+
+
 
 const coreRoutes = [
+  {
+    path: '/createMotorcycleInfringement',
+    title: 'Create Motorcycle Infringement',
+    component: createMotorcycleInfringements,
+  },
+  {
+    path: '/createInfringement',
+    title: 'Create Infringement',
+    component: createInfringement,
+  },
+  {
+    path: '/infringements',
+    title: 'Infringements',
+    component: ListInfringements,
+  },
+  {
+    path: '/ListMotorcycleInfringements',
+    title: 'Motorcycle Infringements',
+    component: ListMotorcycleInfringements,
+  },
   {
   path: '/TrackOrder',
   title: 'Track Order',

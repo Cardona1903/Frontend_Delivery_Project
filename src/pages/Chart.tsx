@@ -13,9 +13,7 @@ const Chart = () => {
         <div className="col-span-12">
           <ChartFour />
         </div>
-        <ChartOne />
-        <ChartTwo />
-        <ChartThree />
+
       </div>
     </>
   );

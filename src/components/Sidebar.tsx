@@ -154,6 +154,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <NavLink to="/createAddress" className="hover:text-white">Address</NavLink>
           </li>
           <li>
+            <NavLink to="/createInfringements" className="hover:text-white">Infringements</NavLink>
+          </li>
+          <li>
             <NavLink to="/createDrivers" className="hover:text-white">Drivers</NavLink>
           </li>
           <li>
@@ -220,6 +223,95 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   Address
                 </NavLink>
               </li>
+
+              {/* <!-- Menu Item Infringements --> */}
+<li>
+  <NavLink
+    to="/ListInfringements"
+    className={({ isActive }) => 
+      `group relative flex items-center gap-2.5 rounded-lg py-2 px-4 font-medium text-gray-200 duration-300 ease-in-out hover:bg-indigo-800 ${
+        isActive && 'bg-indigo-800'
+      }`
+    }
+  >
+    <svg
+      className="fill-current"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M14.0625 2.25H3.9375C3.00527 2.25 2.25 3.00527 2.25 3.9375V14.0625C2.25 14.9947 3.00527 15.75 3.9375 15.75H14.0625C14.9947 15.75 15.75 14.9947 15.75 14.0625V3.9375C15.75 3.00527 14.9947 2.25 14.0625 2.25Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M6.75 6.75H11.25"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M6.75 11.25H11.25"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+    Infringements
+  </NavLink>
+</li>
+
+    {/* <!-- Menu Item Motorcycle Infringements --> */}
+<li>
+  <NavLink
+    to="/ListMotorcycleInfringements"
+    className={({ isActive }) =>
+      `group relative flex items-center gap-2.5 rounded-lg py-2 px-4 font-medium text-gray-200 duration-300 ease-in-out hover:bg-indigo-800 ${
+        isActive && 'bg-indigo-800'
+      }`
+    }
+  >
+    <svg
+      className="fill-current"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M14.0625 2.25H3.9375C3.00527 2.25 2.25 3.00527 2.25 3.9375V14.0625C2.25 14.9947 3.00527 15.75 3.9375 15.75H14.0625C14.9947 15.75 15.75 14.9947 15.75 14.0625V3.9375C15.75 3.00527 14.9947 2.25 14.0625 2.25Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M6.75 6.75H11.25"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M6.75 11.25H11.25"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+    Motorcycle Infringements
+  </NavLink>
+</li>
+
 
                {/* <!-- Menu Item Drivers --> */}
               <li>

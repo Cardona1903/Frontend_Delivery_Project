@@ -44,8 +44,14 @@ const CreatePhotos = lazy(() => import('../pages/Photos/create'));
 const CreateIssues = lazy(() => import('../pages/Issues/create'));
 const CreateShifts = lazy(() => import('../pages/Shifts/create'));
 const CreateUsers = lazy(() => import('../pages/Users/create'));
+const TrackOrder = lazy(() => import('../pages/TrackOrder'));
 
 const coreRoutes = [
+  {
+  path: '/TrackOrder',
+  title: 'Track Order',
+  component: TrackOrder,
+  },
   {
     path: '/createShifts',
     title: 'Create Shifts',

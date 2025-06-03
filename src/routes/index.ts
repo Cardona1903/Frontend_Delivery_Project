@@ -45,36 +45,52 @@ const CreateIssues = lazy(() => import('../pages/Issues/create'));
 const CreateShifts = lazy(() => import('../pages/Shifts/create'));
 const CreateUsers = lazy(() => import('../pages/Users/create'));
 const TrackOrder = lazy(() => import('../pages/TrackOrder'));
-const Infringement = lazy(() => import('../pages/Infringement'));
-const ListInfringements = lazy(() => import('../pages/Infringement/page'));
-const CreateInfringement = lazy(() => import('../pages/Infringement/create'));
-const ListMotorcycleInfringements = lazy(() => import('../pages/MotorcycleInfringement/page'));
-const CreateMotorcycleInfringement = lazy(() => import('../pages/MotorcycleInfringement/create'));
+
+const Infringement = lazy(() => import('../pages/Infringement/ListInfringements'));
+const InfringementCreate = lazy(() => import('../pages/Infringement/CreateInfringement'));
+const InfringementDetails = lazy(() => import('../pages/Infringement/InfringementDetails'));
+export const InfringementTable = () => { import('../components/Infringement/InfringementTable')};
+
+const MotorcycleInfringement = lazy(() => import('../pages/MotorcycleInfringement/ListMotorcycleInfringements'));
+const MotorcycleInfringementCreate = lazy(() => import('../pages/MotorcycleInfringement/CreateMotorcycleInfringement'));
+const MotorcycleInfringementDetails = lazy(() => import('../pages/MotorcycleInfringement/MotorcycleInfringementDetails'));
+export const MotorcycleInfringementTable = () => { import('../components/MotorcycleInfringement/MotorcycleInfringementTable')};
+
 
 const coreRoutes = [
   {
-    path: '/CreateMotorcycleInfringement',
-    title: 'Create Motorcycle Infringement',
-    component: CreateMotorcycleInfringement,
+    path: '/MotorcycleInfringementDetails/:id',
+    title: 'MotorcycleInfringementDetails',
+    component: MotorcycleInfringementDetails,
   },
   {
-    path: '/ListMotorcycleInfringements',
-    title: 'List Motorcycle Infringements',
-    component: ListMotorcycleInfringements,
+    path: '/MotorcycleInfringementCreate',
+    title: 'CreateMotorcycleInfringement',
+    component: MotorcycleInfringementCreate,
   },
   {
-    path: 'ListInfringements',
-    title: 'List Infringements',
-    component: ListInfringements,
+    path: '/MotorcycleInfringement',
+    title: 'MotorcycleInfringement',
+    component: MotorcycleInfringement,
   },
   {
-    path: '/createInfringements',
-    title: 'CreateInfringement', 
-    component: CreateInfringement,
+    path: '/InfringementTable',
+    title: 'InfringementTable',
+    component: InfringementTable,
   },
   {
-    path: '/infringement',
-    title: 'Infringement',
+    path: '/InfringementDetails/:id',
+    title: 'InfringementDetails',
+    component: InfringementDetails,
+  },
+  {
+    path: '/InfringementCreate',
+    title: 'CreateInfringement',
+    component: InfringementCreate,
+  },
+  {
+    path: '/Infringement',
+    title: 'Infringements',
     component: Infringement,
   },
   {
@@ -306,3 +322,5 @@ const coreRoutes = [
 
 const routes = [...coreRoutes];
 export default routes;
+
+

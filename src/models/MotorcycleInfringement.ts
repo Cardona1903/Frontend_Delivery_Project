@@ -1,15 +1,11 @@
-// models/MotorcycleInfringement.ts
+import { Infringement } from "./Infringement";
+import { Motorcycle } from "./Motorcycle";
+
 export interface MotorcycleInfringement {
-    id?: number;
-    date: string; // O usar Date si manejas objetos directamente
-    motorcycle_id: number;
-    infringement_id: number;
-    
-    // Opcional: datos relacionados para mostrar en UI
-    motorcycle?: {
-        license_plate: string;
-    };
-    infringement?: {
-        name: string;
-    };
+  id?: number;
+  infringementId: number;
+  motorcycleId: number;
+  date: string;
+  infringement?: Infringement;
+  motorcycle?: Motorcycle;
 }

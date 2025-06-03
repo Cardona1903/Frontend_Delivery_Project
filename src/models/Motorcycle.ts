@@ -1,8 +1,8 @@
 export interface Motorcycle {
-    model: string;
-    id?: number;
-    license_plate: string;
-    brand: string;
-    year: number;
-    status: string;
+  id: number;
+  licensePlate: string;
+  brand: string;
+  model: string;
+  year: number;
+  status: string;
 }

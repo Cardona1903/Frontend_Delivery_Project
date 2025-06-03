@@ -1,25 +1,51 @@
 // services/MotorcycleInfringementService.ts
-import api from "../interceptors/axiosInterceptor";
 import { MotorcycleInfringement } from "../models/MotorcycleInfringement";
 
-const API_URL = import.meta.env.VITE_API_BASE_URL + "/motorcycle-infringement";
+const API_URL = 'https://e1897de6-5263-40d5-be3c-6ad562ea491d.mock.pstmn.io';
 
-export const createMotorcycleInfringement = async (data: Omit<MotorcycleInfringement, "id">) => {
-    const response = await api.post(API_URL, data);
-    return response.data;
-};
+export class MotorcycleInfringementService {
+  static async create(data: Omit<MotorcycleInfringement, 'id'>): Promise<MotorcycleInfringement> {
+    const response = await fetch(`${API_URL}/motorcycle-infringement`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw new Error('Error creating motorcycle infringement');
+    }
+    return await response.json();
+  }
 
-export const updateMotorcycleInfringement = async (id: number, data: Partial<MotorcycleInfringement>) => {
-    const response = await api.put(`${API_URL}/${id}`, data);
-    return response.data;
-};
+  static async update(id: number, data: Partial<MotorcycleInfringement>): Promise<MotorcycleInfringement> {
+    const response = await fetch(`${API_URL}/motorcycle-infringement/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw new Error('Error updating motorcycle infringement');
+    }
+    return await response.json();
+  }
 
-export const getMotorcycleInfringements = async (): Promise<MotorcycleInfringement[]> => {
-    const response = await api.get(API_URL);
-    return response.data;
-};
+  static async getAll(): Promise<MotorcycleInfringement[]> {
+    // Asumiendo que tu mock API tiene este endpoint
+    const response = await fetch(`${API_URL}/motorcycle-infringements`);
+    if (!response.ok) {
+      throw new Error('Error fetching motorcycle infringements');
+    }
+    return await response.json();
+  }
 
-export const deleteMotorcycleInfringement = async (id: number): Promise<boolean> => {
-    await api.delete(`${API_URL}/${id}`);
-    return true;
-};
+  static async getById(id: number): Promise<MotorcycleInfringement> {
+    const response = await fetch(`${API_URL}/motorcycle-infringement/${id}`);
+    if (!response.ok) {
+      throw new Error('Error fetching motorcycle infringement');
+    }
+    return await response.json();
+  }
+}
